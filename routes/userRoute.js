@@ -1,33 +1,24 @@
 import express from "express";
 // import { User } from "../models/userModel.js";
-import { deleteUserDetails, getUserAll, getUserDetails, register, specialFunc, updateUserDetails } from "../controllers/userController.js";
+import {getMyProfile, getUserAll, login, logout, register} from "../controllers/user.js";
+import { isAuthenticated } from "../middlewares/auth.js";
 
 const router = express.Router();
 
 //getting all users information
 router.get("/all", getUserAll);
 
-//takes special as separate url not as ID therefore run
-router.get("/userId/special", specialFunc)
+router.route("/profile")
+    .get(isAuthenticated, getMyProfile);
+// router.get("/profile", isAuthenticated, getMyProfile);
 
-// getting user details in dynamic route: dynamic way of giving id in url 
-router.route("/userId/:id")
-    .get(getUserDetails)
-    .put(updateUserDetails)
-    .delete(deleteUserDetails)
-
-//     since url same so yes this below lines can be written as written above
-// router.get("/userId/:id", getUserDetails);
-// router.put("/userId/:id", updateUserDetails);
-// router.delete("/userId/:id", deleteUserDetails);
-
-
-
-
-//takes special as ID therefore gives error since special is not an ID
-router.get("/userId/special", specialFunc)
+router.get("/logout", logout);
 
 //register or collecting user info from user
-router.post("/new", register)
+router.post("/new", register);
+
+// if already registered then login
+router.post("/login", login);
+
 
 export default router;
